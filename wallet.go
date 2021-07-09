@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	_ "crypto"
 	"crypto/ecdsa"
 	"crypto/elliptic"
@@ -66,6 +67,8 @@ func (wallet *Wallet)NewAddress() string {
 
 	return address
 }
+
+//ripemd160过程
 func HashPubKey(data []byte) []byte {
 	hash := sha256.Sum256(data)
 	//编码器
@@ -76,5 +79,26 @@ func HashPubKey(data []byte) []byte {
 	}
 	ripe160HashValue := ripe160hasher.Sum(nil)
 	return ripe160HashValue
+}
+//封装Checksum过程
+func CheckSum(data []byte) []byte {
+	//两次sha256
+	hash1 := sha256.Sum256(data)
+	hash2 := sha256.Sum256(hash1[:])
+
+	//前4字节校验码
+	checkCode := hash2[:4]
+	return checkCode
+}
+//检验地址
+func IsVaildAddress(address string) bool {
+	addressByte := base58.Decode(address)
+	hash := addressByte[:21]
+	checkCode := addressByte[21:]
+	checkCodeOwn := CheckSum(hash)
+	if !bytes.Equal(checkCode, checkCodeOwn){
+		return false
+	}
+	return true
 }
 

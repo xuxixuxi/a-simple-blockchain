@@ -12,8 +12,8 @@ type CLI struct {
 
 const Usage =
 	`
-		printChain						'反向打印区块链'
-		printRChain						'正向打印区块链'
+		printRChain						'反向打印区块链'
+		printChain						'正向打印区块链'
 		getBalance --address ADDRESS				'获取指定地址的余额'
 		send FROM TO AMOUNT MINER DATA				'由FROM转入TO AMOUNT金额, 由MINER挖矿, 同时写入DATA'
 		newWallet 						'创建一个钱包（公钥私钥对）'
@@ -31,9 +31,9 @@ func (cli *CLI)Run()  {
 	//Execute commands
 	cmd := args[1]
 	switch cmd {
-	case "printChain":
-		cli.PrintBlockChain()
 	case "printRChain":
+		cli.PrintBlockChain()
+	case "printChain":
 		cli.PrintRBlockChain()
 	case "getBalance":
 		if len(args) == 4 && args[2] == "--address" {
